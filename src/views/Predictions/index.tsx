@@ -112,27 +112,62 @@ const Predictions = () => {
   //   return <PageLoader />
   // }
 
+  interface Nft {
+    red:number
+    green:number
+    blue:number
+    timestamp:string
+  }
   
-  const [ipfs, setIpfs] = useState<any>()
+  const [nfts, setNfts] = useState<Nft[]>()
+  const [red, setRed] = useState<number>()
+  const [green, setGreen] = useState<number>()
+  const [blue, setBlue] = useState<number>()
+
+  const getNfts = async () => {
+    const call = await axios.get('http://localhost:3001/api/test')
+    if (call.data) setNfts(call.data)
+  }
   
   useEffect(() => {
-    if (!ipfs) {
-      const ipfsPromise = axios.get('https://bafybeidxaign6fxr5fgyro7yipsuhjo4tmiknf6eqf53jxc6bzzjbybyoq.ipfs.dweb.link/')
-      ipfsPromise.then((res) => setIpfs(res.data))
-    }
-  })
-
-console.log(ipfs)
+    // if (!ipfs) {
+    //   const ipfsPromise = axios.get('https://bafybeidxaign6fxr5fgyro7yipsuhjo4tmiknf6eqf53jxc6bzzjbybyoq.ipfs.dweb.link/')
+    //   ipfsPromise.then((res) => setIpfs(res.data))
+    // }
+    getNfts()
+  },[red])
 
 const test = () => {
-  axios.post('http://localhost:3001/api/test',{})
+  axios.post('http://localhost:3001/api/test',{ red, green, blue })
+  document.location.reload()
 }
 
   return (
     <div>
-      hello world
-      {ipfs && <img src='https://bafybeif5t7rxdmh5zig2dtcpixdt5ilnwdcm46y6pkcu5lixg5ya7s6nza.ipfs.dweb.link/' alt='pic' />}
-      <button type="submit" onClick={test}>test</button>
+      <table style={{ width: "100%" }}>
+        <thead>
+          <th>red</th>
+          <th>green</th>
+          <th>blue</th>
+          <th>time</th>
+        </thead>
+        <tbody>
+          {nfts && nfts.map((nft:Nft) => {
+            return (
+              <tr>
+                <td>{nft.red}</td>
+                <td>{nft.green}</td>
+                <td>{nft.blue}</td>
+                <td>{nft.timestamp}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+      <input type="number" placeholder="Red" onChange={(event) => setRed(Number(event.target.value))} />
+      <input type="number" placeholder="Green" onChange={(event) => setGreen(Number(event.target.value))} />
+      <input type="number" placeholder="Blue" onChange={(event) => setBlue(Number(event.target.value))} />
+      <button type="submit" onClick={test}>mint</button>
     </div>
   )
 }
