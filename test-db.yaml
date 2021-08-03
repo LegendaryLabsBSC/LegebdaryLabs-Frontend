@@ -1,0 +1,23 @@
+# docker pull mongo
+# docker pull mongo-express
+# docker network create -d mongo-network
+
+# TO TALK TO MONGO RUN:
+
+# docker exec -it legendarylabs-frontend_mongodb_1 bash
+# mongo
+# use admin
+# db.auth('admin')
+# password
+
+# SHOULD RETURN 1
+
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    ports: 
+     - 27017:27017
+    environment:
+     - MONGO_INITDB_ROOT_USERNAME=admin
+     - MONGO_INITDB_ROOT_PASSWORD=password
